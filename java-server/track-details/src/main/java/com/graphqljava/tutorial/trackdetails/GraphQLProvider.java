@@ -11,6 +11,9 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -51,7 +54,22 @@ public class GraphQLProvider {
     }
 
     @Bean
-    public GraphQL graphQL() { 
+    public GraphQL graphQL() {
         return graphQL;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+
+                registry.addMapping("/graphql")
+                    .allowedOrigins(
+                        "https://studio.apollographql.com",
+                        "http://localhost:3000"
+                    );
+            }
+        };
     }
 }
